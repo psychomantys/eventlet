@@ -544,8 +544,11 @@ def _green_existing_locks(rlock_type):
             for o in gc.get_objects():
                 # This can happen in Python 3.12, at least, if monkey patch
                 # happened as side-effect of importing a module.
-                if not isinstance(o, rlock_type):
-                    continue
+                try:
+                    if not isinstance(o, rlock_type):
+                        continue
+                except ReferenceError:
+                    pass
                 if _frozen_importlib._ModuleLock in map(type, gc.get_referrers(o)):
                     remaining_rlocks -= 1
                 del o
