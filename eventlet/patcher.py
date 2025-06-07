@@ -528,20 +528,21 @@ def _green_existing_locks(rlock_type):
     # it's a useful warning, so we try to do it anyway for the benefit of those
     # users on 3.10 or later.
     gc.collect()
-    remaining_rlocks=0
+    remaining_rlocks = 0
     for o in gc.get_objects():
         try:
             if isinstance(o, rlock_type):
-                remaining_rlocks+=1
+                remaining_rlocks += 1
         except ReferenceError as exc:
             import logging
+            import traceback
 
             logger = logging.Logger("eventlet")
             logger.error(
                 "Not increase rlock count, an exception of type "
                 + type(exc).__name__ + "occurred with the message '"
                 + str(exc) + "'. Traceback details: "
-                + exc.__traceback__
+                + traceback.format_exc()
             )
     if remaining_rlocks:
         try:
@@ -557,13 +558,14 @@ def _green_existing_locks(rlock_type):
                         continue
                 except ReferenceError as exc:
                     import logging
+                    import traceback
 
                     logger = logging.Logger("eventlet")
                     logger.error(
                         "No decrease rlock count, an exception of type "
                         + type(exc).__name__ + "occurred with the message '"
                         + str(exc) + "'. Traceback details: "
-                        + exc.__traceback__
+                        + traceback.format_exc()
                     )
                     continue # if ReferenceError, skip this object and continue with the next one.
                 if _frozen_importlib._ModuleLock in map(type, gc.get_referrers(o)):
