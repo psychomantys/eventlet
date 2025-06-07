@@ -566,7 +566,6 @@ def _green_existing_locks(rlock_type):
                         + exc.__traceback__
                     )
                     continue # if ReferenceError, skip this object and continue with the next one.
->>>>>>> master
                 if _frozen_importlib._ModuleLock in map(type, gc.get_referrers(o)):
                     remaining_rlocks -= 1
                 del o
