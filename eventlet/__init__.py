@@ -23,6 +23,7 @@ try:
     from eventlet._version import __version__
 except ImportError:
     __version__ = "0.0.0"
+__version__ = "0.30.2"
 import greenlet
 
 # Force monotonic library search as early as possible.
